@@ -1,64 +1,38 @@
-// Retrieve saved preferences from localStorage
-let is24Hour = localStorage.getItem('timeFormat') !== '12';
-let currentTheme = localStorage.getItem('theme') || 'light';
+let is24Hour = localStorage.getItem('format') !== '12';
+let isDark = localStorage.getItem('theme') === 'dark';
 
-const clockElement = document.getElementById('clock');
-const greetingElement = document.getElementById('greeting');
-const themeBtn = document.getElementById('theme-toggle');
-const formatBtn = document.getElementById('format-toggle');
-
-// Initialize theme on load
-document.body.className = currentTheme + '-mode';
-
-function updateClock() {
+function update() {
     const now = new Date();
-    const hours24 = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
 
-    // 1. Update Greeting
-    if (hours24 < 12) {
-        greetingElement.textContent = "Good Morning! 🌅";
-    } else if (hours24 < 18) {
-        greetingElement.textContent = "Good Afternoon! ☀️";
-    } else {
-        greetingElement.textContent = "Good Evening! 🌙";
-    }
+    // Greeting
+    const g = document.getElementById('greeting');
+    if(h < 12) g.textContent = "Good Morning! 🌅";
+    else if(h < 18) g.textContent = "Good Afternoon! ☀️";
+    else g.textContent = "Good Evening! 🌙";
 
-    // 2. Format Time
-    let hoursDisplay = hours24;
+    // Format
     let ampm = "";
-
-    if (!is24Hour) {
-        ampm = hours24 >= 12 ? " PM" : " AM";
-        hoursDisplay = hours24 % 12 || 12;
+    if(!is24Hour) {
+        ampm = h >= 12 ? " PM" : " AM";
+        h = h % 12 || 12;
     }
-
-    const h = hoursDisplay.toString().padStart(2, '0');
-    clockElement.textContent = `${h}:${minutes}:${seconds}${ampm}`;
-    
-    updateButtonText();
+    document.getElementById('clock').textContent = `${String(h).padStart(2, '0')}:${m}:${s}${ampm}`;
 }
 
-function updateButtonText() {
-    themeBtn.textContent = document.body.classList.contains('dark-mode') ? "Switch to Light Mode" : "Switch to Dark Mode";
-    formatBtn.textContent = is24Hour ? "Switch to 12-Hour Format" : "Switch to 24-Hour Format";
-}
+document.getElementById('theme-toggle').onclick = () => {
+    isDark = !isDark;
+    document.body.className = isDark ? 'dark-mode' : 'light-mode';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+};
 
-// Event Listeners
-themeBtn.addEventListener('click', () => {
-    const newTheme = document.body.classList.contains('light-mode') ? 'dark' : 'light';
-    document.body.className = newTheme + '-mode';
-    localStorage.setItem('theme', newTheme);
-    updateButtonText();
-});
-
-formatBtn.addEventListener('click', () => {
+document.getElementById('format-toggle').onclick = () => {
     is24Hour = !is24Hour;
-    localStorage.setItem('timeFormat', is24Hour ? '24' : '12');
-    updateClock();
-});
+    localStorage.setItem('format', is24Hour ? '24' : '12');
+};
 
-// Run clock every second
-setInterval(updateClock, 1000);
-updateClock();
+document.body.className = isDark ? 'dark-mode' : 'light-mode';
+setInterval(update, 1000);
+update();
