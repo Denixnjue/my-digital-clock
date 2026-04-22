@@ -1,0 +1,64 @@
+// Retrieve saved preferences from localStorage
+let is24Hour = localStorage.getItem('timeFormat') !== '12';
+let currentTheme = localStorage.getItem('theme') || 'light';
+
+const clockElement = document.getElementById('clock');
+const greetingElement = document.getElementById('greeting');
+const themeBtn = document.getElementById('theme-toggle');
+const formatBtn = document.getElementById('format-toggle');
+
+// Initialize theme on load
+document.body.className = currentTheme + '-mode';
+
+function updateClock() {
+    const now = new Date();
+    const hours24 = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+
+    // 1. Update Greeting
+    if (hours24 < 12) {
+        greetingElement.textContent = "Good Morning! 🌅";
+    } else if (hours24 < 18) {
+        greetingElement.textContent = "Good Afternoon! ☀️";
+    } else {
+        greetingElement.textContent = "Good Evening! 🌙";
+    }
+
+    // 2. Format Time
+    let hoursDisplay = hours24;
+    let ampm = "";
+
+    if (!is24Hour) {
+        ampm = hours24 >= 12 ? " PM" : " AM";
+        hoursDisplay = hours24 % 12 || 12;
+    }
+
+    const h = hoursDisplay.toString().padStart(2, '0');
+    clockElement.textContent = `${h}:${minutes}:${seconds}${ampm}`;
+    
+    updateButtonText();
+}
+
+function updateButtonText() {
+    themeBtn.textContent = document.body.classList.contains('dark-mode') ? "Switch to Light Mode" : "Switch to Dark Mode";
+    formatBtn.textContent = is24Hour ? "Switch to 12-Hour Format" : "Switch to 24-Hour Format";
+}
+
+// Event Listeners
+themeBtn.addEventListener('click', () => {
+    const newTheme = document.body.classList.contains('light-mode') ? 'dark' : 'light';
+    document.body.className = newTheme + '-mode';
+    localStorage.setItem('theme', newTheme);
+    updateButtonText();
+});
+
+formatBtn.addEventListener('click', () => {
+    is24Hour = !is24Hour;
+    localStorage.setItem('timeFormat', is24Hour ? '24' : '12');
+    updateClock();
+});
+
+// Run clock every second
+setInterval(updateClock, 1000);
+updateClock();

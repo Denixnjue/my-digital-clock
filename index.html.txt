@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Digital Clock</title>
+    <!-- NEW: Google Fonts Link -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode">
+    <div class="clock-container">
+        <div id="greeting">Loading...</div>
+        <h1 id="clock">00:00:00</h1>
+        <div class="button-group">
+            <button id="theme-toggle">Switch to Dark Mode</button>
+            <button id="format-toggle">Switch to 12-Hour Format</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
